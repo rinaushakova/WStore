@@ -60,9 +60,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // goods
 
-const more = document.querySelector('.more'),
-	  navigationLink = document.querySelectorAll('.navigation-link'),
-	  showAllLink = document.querySelector('.navigation-link-all'),
+const navigationLink = document.querySelectorAll('.navigation-link:not(.view-all)'),
+	  viewAll = document.querySelectorAll('.view-all'),
 	  longGoodsList = document.querySelector('.long-goods-list');
 
 const getGoods = async function() {
@@ -73,9 +72,6 @@ const getGoods = async function() {
 	return await res.json();
 };
 
-getGoods().then(function (data) {
-	console.log(data)
-});
 
 const createCards = function ({label, name, img, description, id, price}) {
 	const card = document.createElement('div');
@@ -104,21 +100,23 @@ const renderCards = function(data) {
 	document.body.classList.add('show-goods');
 };
 
-more.addEventListener('click', (e) => {
+const showAll = function(e) {
 	e.preventDefault();
 	getGoods().then(renderCards);
-});
+}
 
+viewAll.forEach((elem) => {
+	elem.addEventListener('click', showAll);
+});
 
 
 
 const filterCards = function(field, value) {
 	getGoods()
 	.then(function (data) {
-		const filterGoods = data.filter(function (good) {
+		return data.filter(function (good) {
 			return good[field] === value
 		});
-		return filterGoods;
 	})
 	.then(renderCards);
 };
